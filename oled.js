@@ -201,8 +201,8 @@ Oled.prototype.writeString = function(font, size, string, color, wrap, linespaci
       var charBuf = this._findCharBuf(font, stringArr[i]);
       // read the bits in the bytes that make up the char
       var charBytes = this._readCharBytes(charBuf);
-      // draw the entire character
-      this._drawChar(font, charBytes, size, false);
+      // draw the entire character (with color parameter)
+      this._drawChar(font, charBytes, size, false, color);
 
       // calc new x position for the next char, add a touch of padding too if it's a non space char
       padding = (stringArr[i] === ' ') ? 0 : size + letspace;
@@ -223,7 +223,7 @@ Oled.prototype.writeString = function(font, size, string, color, wrap, linespaci
 };
 
 // draw an individual character to the screen
-Oled.prototype._drawChar = function(font, byteArray, size, sync) {
+Oled.prototype._drawChar = function(font, byteArray, size, sync, _color) {
   // take your positions...
   var x = this.cursor_x,
       y = this.cursor_y;
@@ -237,6 +237,11 @@ Oled.prototype._drawChar = function(font, byteArray, size, sync) {
       // pull color out
       var color = byteArray[i][j],
           xpos, ypos;
+		  
+		// Invert color if needed  
+		color=_color==0 ? (color==1 ? 0 : 1) : color;
+		
+		
       // standard font size
       if (size === 1) {
         xpos = x + c;
